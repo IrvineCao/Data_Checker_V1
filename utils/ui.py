@@ -107,31 +107,6 @@ def render_file_info(df):
         unique_months = df['month'].nunique() if 'month' in df.columns else 0
         st.metric("📅 Months", unique_months)
 
-def render_comparison_mode(has_level_column, df):
-    """Render comparison mode selection"""
-    if has_level_column:
-        comparison_mode = st.radio(
-            "How to handle levels?",
-            ["keep_separate", "aggregate_all", "filter_level"],
-            format_func=lambda x: {
-                "keep_separate": "📋 Compare each level separately",
-                "aggregate_all": "📈 Sum all levels together", 
-                "filter_level": "🎯 Compare specific level only"
-            }[x],
-            help="Choose how to compare multi-level data with database"
-        )
-        
-        if comparison_mode == "filter_level":
-            selected_level = st.selectbox("Select Level", df['level'].unique())
-        else:
-            selected_level = None
-    else:
-        comparison_mode = "standard"
-        selected_level = None
-        st.info("📊 Standard comparison mode (aggregated data)")
-        
-    return comparison_mode, selected_level
-
 def render_results_summary(comparison_results):
     """Render summary metrics"""
     total_comparisons = len(comparison_results)
@@ -341,23 +316,3 @@ def render_export_section(comparison_results, total_comparisons, matches, mismat
             mime="text/csv",
             use_container_width=True
         )
-
-def render_recommendations(matches, total_comparisons, comparison_results, missing_file, missing_db):
-    """Render recommendations section"""
-    st.divider()
-    st.subheader("💡 Recommendations")
-    
-    if matches / total_comparisons >= 0.95:
-        st.success("🎉 **Excellent!** Your data has >95% accuracy. Minor discrepancies are within acceptable ranges.")
-    elif matches / total_comparisons >= 0.85:
-        st.warning("⚠️ **Good but needs attention.** 85-95% accuracy detected. Review mismatches for potential data issues.")
-    else:
-        st.error("🚨 **Action required!** <85% accuracy detected. Significant data discrepancies need investigation.")
-    
-    # Specific recommendations based on results
-    if len(comparison_results[comparison_results['status'] == 'mismatch']) > 0:
-        worst_metric = comparison_results[comparison_results['status'] == 'mismatch']['metric'].value_counts().index[0]
-        st.info(f"🎯 **Focus Area:** {worst_metric.title()} has the most mismatches. Consider reviewing data collection for this metric.")
-    
-    if missing_file > 0 or missing_db > 0:
-        st.info("📊 **Data Gaps:** Some data points are missing in file or database. Check data completeness for affected periods.") 

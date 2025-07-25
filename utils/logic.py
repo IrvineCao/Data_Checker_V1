@@ -7,7 +7,7 @@ from Data.get_data import get_query
 import streamlit as st
 
 @trace_function_call
-def preprocess_uploaded_data(df, mode, level_filter=None):
+def preprocess_uploaded_data(df, level_filter=None):
     """Clean and prepare uploaded data for comparison."""
     df = df.copy()
     
@@ -25,41 +25,15 @@ def preprocess_uploaded_data(df, mode, level_filter=None):
     # Ensure storefront is integer
     df['storefront'] = df['storefront'].astype(int)
     
-    if mode == "aggregate_all" and 'level' in df.columns:
-        # Sum all levels
-        df_processed = df.groupby(['storefront', 'month']).agg({
-            'impressions': 'sum',
-            'clicks': 'sum',
-            'gmv': 'sum', 
-            'expense': 'sum',
-            'roas': 'mean'  # Average ROAS
-        }).reset_index()
-        df_processed['level'] = 'aggregated'
-        
-    elif mode == "filter_level" and level_filter:
-        # Filter to specific level
-        df_processed = df[df['level'] == level_filter].copy()
-        
-    else:
-        # Keep as-is (separate levels or already aggregated)
-        df_processed = df
-    
-    return df_processed
+    return df
 
 @trace_function_call 
-def query_database_performance(storefront_ids, months, mode, level_filter=None, marketplace=None):
+def query_database_performance(storefront_ids, months, level_filter=None, marketplace=None):
     """Query database for performance metrics with level handling."""
     
     # Build query parameters based on comparison mode
-    if mode == "aggregate_all":
-        aggregate_levels = True
-        level_filter_param = None
-    elif mode == "filter_level":
-        aggregate_levels = False
-        level_filter_param = level_filter
-    else:  # keep_separate or standard
-        aggregate_levels = False
-        level_filter_param = None
+    aggregate_levels = False
+    level_filter_param = None
     
     # Determine marketplace from current page if not provided
     if marketplace is None:
@@ -73,12 +47,15 @@ def query_database_performance(storefront_ids, months, mode, level_filter=None, 
     else:
         raise ValueError("Invalid marketplace. Must be 'lazada' or 'shopee'")
     
-    # Convert parameters to the correct format
+    # Convert lists to tuples for IN clause
+    storefront_tuple = tuple(storefront_ids)
+    months_tuple = tuple(months)
+    
     params = {
-        "storefront_ids": tuple(storefront_ids),
-        "months": tuple(months),
+        "storefront_ids": storefront_tuple,
+        "months": months_tuple,
         "level_filter": level_filter_param,
-        "aggregate_levels": bool(aggregate_levels)  # Ensure boolean type
+        "aggregate_levels": aggregate_levels
     }
     
     with get_connection() as db:
@@ -155,4 +132,4 @@ def compare_performance_data(df_file, df_db, metrics, tolerances):
                 'status': status
             })
     
-    return pd.DataFrame(results) 
+    return pd.DataFrame(results)

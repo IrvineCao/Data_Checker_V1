@@ -69,13 +69,8 @@ def main():
                 st.error(f"❌ Missing required columns: {missing_columns}")
                 st.stop()
             
-            # Get comparison mode
-            comparison_mode_placeholder = st.empty()
-            with comparison_mode_placeholder.container():
-                comparison_mode, selected_level = ui.render_comparison_mode(has_level_column, df_upload)
-            
             # Process data
-            df_processed = preprocess_uploaded_data(df_upload, comparison_mode, selected_level)
+            df_processed = preprocess_uploaded_data(df_upload)
             
             # Extract parameters for database query
             unique_storefronts = df_processed['storefront'].unique().tolist()
@@ -88,8 +83,6 @@ def main():
                 df_database = query_database_performance(
                     unique_storefronts, 
                     unique_months, 
-                    comparison_mode, 
-                    selected_level,
                     marketplace="lazada"  # Add marketplace parameter
                 )
             
@@ -128,63 +121,11 @@ def main():
             
             # Export section
             ui.render_export_section(comparison_results, total_comparisons, matches, mismatches, missing_file, missing_db)
-            
-            # Recommendations
-            ui.render_recommendations(matches, total_comparisons, comparison_results, missing_file, missing_db)
-            
+                        
         except Exception as e:
             st.error(f"❌ Error processing file: {str(e)}")
             with st.expander("🔍 Error Details", expanded=False):
                 st.exception(e)
-
-    else:
-        # Help section when no file uploaded
-        st.info("👆 **Please upload a Lazada performance file to begin validation**")
-        
-        st.subheader("📚 How to Use This Tool")
-        
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.markdown("""
-            ### 🎯 **Step-by-Step Guide:**
-            
-            1. **📤 Upload your Lazada file** (CSV or Excel format)
-            2. **⚙️ Configure metrics** in the sidebar
-            3. **🔍 Review file detection** and choose comparison mode
-            4. **📊 Analyze results** in the validation dashboard
-            5. **📥 Download reports** for further analysis
-            
-            ### 📋 **File Format Requirements:**
-            
-            **Multi-Level Format:**
-            - `storefront`: Lazada Store ID (numeric)
-            - `month`: Month number (1-12) 
-            - `level`: campaign/object/placement
-            - `Impression`, `Clicks`, `GMV`, `Expense`, `ROAS`: Metric values
-            
-            **Aggregated Format:**
-            - `storefront`: Lazada Store ID (numeric)
-            - `month`: Month number (1-12)
-            - `Impression`, `Clicks`, `GMV`, `Expense`, `ROAS`: Metric values
-            """)
-        
-        with col2:
-            st.markdown("""
-            ### 🎛️ **Comparison Modes:**
-            
-            **📋 Keep Separate:** Compare each level (campaign/object/placement) individually
-            
-            **📈 Aggregate All:** Sum all levels together for comparison
-            
-            **🎯 Filter Level:** Compare only specific level (e.g., only campaigns)
-            
-            ### 📊 **Understanding Results:**
-            
-            - **✅ Match**: Within tolerance range (5%)
-            - **❌ Mismatch**: Exceeds tolerance threshold
-            - **⚠️ Missing**: Data exists in one source only
-            """)
 
 if __name__ == "__main__":
     main() 
