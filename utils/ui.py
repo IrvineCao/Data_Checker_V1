@@ -224,7 +224,7 @@ def render_detailed_results(comparison_results):
                 return 'background-color: rgba(255, 177, 43, 0.2)'
             return ''
         
-        styled_results = comparison_results.style.applymap(
+        styled_results = comparison_results.style.map(
             highlight_status, subset=['status']
         ).format({
             'file_value': '{:.2f}',

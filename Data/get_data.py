@@ -11,7 +11,6 @@ def _get_query_from_file(file_path: str) -> str:
         raise e
 
 query_params = {
-    "count": _get_query_from_file("count_query.sql"),
     "data_lazada": _get_query_from_file("performance_query_lazada.sql"),
     "data_shopee": _get_query_from_file("performance_query_shopee.sql")
 }

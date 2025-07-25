@@ -1,19 +1,15 @@
 import streamlit as st
 import pandas as pd
-from utils.helpers import initialize_session_state, display_user_message
+from utils.helpers import initialize_session_state
 from utils.logic import preprocess_uploaded_data, query_database_performance, compare_performance_data
 from utils import ui
+from utils.ui import *
 
-def load_css():
-    """Load custom CSS from file"""
-    with open("assets/styles.css") as f:
-        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 def main():
     load_css()
     # Initialize session state and display user message
     initialize_session_state()
-    display_user_message()
 
     # Setup page
     st.set_page_config(

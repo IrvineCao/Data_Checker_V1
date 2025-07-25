@@ -1,13 +1,12 @@
 import streamlit as st
 import pandas as pd
-from utils.helpers import initialize_session_state, display_user_message
+from utils.helpers import initialize_session_state
 from utils.logic import preprocess_uploaded_data, query_database_performance, compare_performance_data
 from utils import ui
 
 def main():
     # Initialize session state and display user message
     initialize_session_state()
-    display_user_message()
 
     # Setup page
     st.set_page_config(
@@ -15,114 +14,71 @@ def main():
         page_icon="🔍",
         layout="wide"
     )
-    
-    # Navigation in sidebar
-    with st.sidebar:
-        st.title("Navigation")
-        page = st.radio(
-            "Go to",
-            ["Home", "Lazada", "Shopee"],
-            index=0,
-            format_func=lambda x: f"🏠 {x}" if x == "Home" else f"🛍️ {x}" if x == "Lazada" else f"🛒 {x}"
-        )
-        # Store current page in session state
-        st.session_state['current_page'] = page
-    
-    if page == "Home":
-        # Header
-        st.title("🔍 Performance Data Validation Tool")
-        st.markdown("**Validate your marketplace performance files against database metrics**")
-        
-        # Main content
-        st.divider()
-        
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.markdown("""
-            ### 🛍️ Lazada Performance Validation
-            
-            Select **Lazada** in the sidebar to:
-            - Validate Lazada performance files
-            - Compare metrics at different levels
-            - Get detailed analysis and reports
-            
-            **Key Features:**
-            - Multi-level data support (campaign/object/placement)
-            - Automatic data aggregation
-            - Visual analytics and insights
-            - Detailed validation reports
-            """)
-        
-        with col2:
-            st.markdown("""
-            ### 🛒 Shopee Performance Validation
-            
-            Select **Shopee** in the sidebar to:
-            - Validate Shopee performance files
-            - Compare metrics at different levels
-            - Get detailed analysis and reports
-            
-            **Key Features:**
-            - Multi-level data support (campaign/object/placement)
-            - Automatic data aggregation
-            - Visual analytics and insights
-            - Detailed validation reports
-            """)
-        
-        # Additional information
-        st.divider()
-        st.subheader("ℹ️ About This Tool")
-        
-        st.markdown("""
-        This tool helps you validate performance data from different marketplaces against our database records.
-        Key features include:
 
-        - **🎯 5% Tolerance**: All metrics are validated with a 5% tolerance threshold
-        - **📊 Multi-Level Support**: Compare data at campaign, object, or placement level
-        - **📈 Automatic Aggregation**: Option to aggregate all levels for comparison
-        - **📋 Detailed Reports**: Get comprehensive validation reports and insights
-        - **📊 Visual Analytics**: Visual representation of validation results
-        """)
-        
-        # Footer
-        st.divider()
-        st.markdown("""
-        <div style='text-align: center; color: #a1a1aa; padding: 1rem;'>
-            <p>🔍 <strong>Performance Data Validation Tool</strong> | Built for data accuracy and peace of mind</p>
-            <p><em>"Trust, but verify. Especially when it comes to performance data."</em></p>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    elif page == "Lazada":
-        # Lazada page content
-        st.title("🛍️ Lazada Performance Data Validation")
-        st.markdown("**Validate your Lazada performance files against database metrics**")
-        
-        # Get configuration from sidebar
-        selected_metrics, tolerance_config = ui.render_sidebar()
+# Header
+st.title("🔍 Performance Data Validation Tool")
 
-        # File upload section
-        uploaded_file = ui.render_file_upload_section(marketplace="Lazada")
-        
-        # Process uploaded file
-        if uploaded_file is not None:
-            process_file(uploaded_file, selected_metrics, tolerance_config)
-    
-    else:  # Shopee page
-        # Shopee page content
-        st.title("🛒 Shopee Performance Data Validation")
-        st.markdown("**Validate your Shopee performance files against database metrics**")
-        
-        # Get configuration from sidebar
-        selected_metrics, tolerance_config = ui.render_sidebar()
+# Main content
+st.divider()
 
-        # File upload section
-        uploaded_file = ui.render_file_upload_section(marketplace="Shopee")
-        
-        # Process uploaded file
-        if uploaded_file is not None:
-            process_file(uploaded_file, selected_metrics, tolerance_config)
+col1, col2 = st.columns(2)
+
+with col1:
+    st.markdown("""
+    ### 🛍️ Lazada Performance Validation
+    
+    Select **Lazada** in the sidebar to:
+    - Validate Lazada performance files
+    - Compare metrics at different levels
+    - Get detailed analysis and reports
+    
+    **Key Features:**
+    - Multi-level data support (campaign/object/placement)
+    - Automatic data aggregation
+    - Visual analytics and insights
+    - Detailed validation reports
+    """)
+
+with col2:
+    st.markdown("""
+    ### 🛒 Shopee Performance Validation
+    
+    Select **Shopee** in the sidebar to:
+    - Validate Shopee performance files
+    - Compare metrics at different levels
+    - Get detailed analysis and reports
+    
+    **Key Features:**
+    - Multi-level data support (campaign/object/placement)
+    - Automatic data aggregation
+    - Visual analytics and insights
+    - Detailed validation reports
+    """)
+
+# Additional information
+st.divider()
+st.subheader("ℹ️ About This Tool")
+
+st.markdown("""
+This tool helps you validate performance data from different marketplaces against our database records.
+Key features include:
+
+- **🎯 5% Tolerance**: All metrics are validated with a 5% tolerance threshold
+- **📊 Multi-Level Support**: Compare data at campaign, object, or placement level
+- **📈 Automatic Aggregation**: Option to aggregate all levels for comparison
+- **📋 Detailed Reports**: Get comprehensive validation reports and insights
+- **📊 Visual Analytics**: Visual representation of validation results
+""")
+
+# Footer
+st.divider()
+st.markdown("""
+<div style='text-align: center; color: #a1a1aa; padding: 1rem;'>
+    <p>🔍 <strong>Performance Data Validation Tool</strong> | Built for data accuracy and peace of mind</p>
+    <p><em>"Trust, but verify. Especially when it comes to performance data."</em></p>
+</div>
+""", unsafe_allow_html=True)
+
 
 def process_file(uploaded_file, selected_metrics, tolerance_config):
     """Process uploaded file and display results"""

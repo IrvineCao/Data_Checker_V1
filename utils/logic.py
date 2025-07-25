@@ -2,11 +2,9 @@ import pandas as pd
 import numpy as np
 from sqlalchemy import text
 from utils.database import get_connection
-from utils.helpers import trace_function_call
 from Data.get_data import get_query
 import streamlit as st
 
-@trace_function_call
 def preprocess_uploaded_data(df, level_filter=None):
     """Clean and prepare uploaded data for comparison."""
     df = df.copy()
@@ -27,7 +25,6 @@ def preprocess_uploaded_data(df, level_filter=None):
     
     return df
 
-@trace_function_call 
 def query_database_performance(storefront_ids, months, level_filter=None, marketplace=None):
     """Query database for performance metrics with level handling."""
     
@@ -61,7 +58,6 @@ def query_database_performance(storefront_ids, months, level_filter=None, market
     with get_connection() as db:
         return pd.read_sql(text(query), db.connection(), params=params)
 
-@trace_function_call
 def compare_performance_data(df_file, df_db, metrics, tolerances):
     """Compare performance metrics between file and database."""
     results = []
