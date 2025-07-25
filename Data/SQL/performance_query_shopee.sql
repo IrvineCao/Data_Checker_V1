@@ -14,8 +14,10 @@ WITH campaign_performance AS (
     FROM ads_ops_ads_campaigns camp
     INNER JOIN ads_ops_ads_campaigns_performance perf 
         ON camp.id = perf.ads_campaign_id
-    WHERE camp.storefront_id IN :storefront_ids
-        AND MONTH(perf.created_datetime) IN :months
+        AND camp.tool_code in ('SHP_PRODUCT_ADS','SHP_SHOP_ADS')
+        AND camp.marketplace_code = 'shopee'
+        AND MONTH(perf.created_datetime) IN (:months)
+    WHERE camp.storefront_id IN (:storefront_ids)
     GROUP BY camp.storefront_id, MONTH(perf.created_datetime)
 ), 
 
@@ -35,8 +37,10 @@ object_performance AS (
     FROM ads_ops_ads_objects obj
     INNER JOIN ads_ops_ads_objects_performance perf 
         ON obj.id = perf.ads_object_id
-    WHERE obj.storefront_id IN :storefront_ids
-        AND MONTH(perf.created_datetime) IN :months
+        AND obj.marketplace_code = 'shopee'
+        AND obj.tool_code in ('SHP_PRODUCT_ADS','SHP_SHOP_ADS')
+        AND MONTH(perf.created_datetime) IN (:months)
+    WHERE obj.storefront_id IN (:storefront_ids)
     GROUP BY obj.storefront_id, MONTH(perf.created_datetime)
 ),
 
@@ -56,9 +60,11 @@ placement_performance AS (
     FROM ads_ops_ads_placements pl
     INNER JOIN ads_ops_ads_placements_performance perf 
         ON pl.id = perf.ads_placement_id
-    WHERE pl.storefront_id IN :storefront_ids
-        AND MONTH(perf.created_datetime) IN :months
         AND perf.timing = 'daily'
+        AND pl.marketplace_code = 'shopee'
+        AND pl.tool_code in ('SHP_PRODUCT_ADS','SHP_SHOP_ADS')
+        AND MONTH(perf.created_datetime) IN (:months)
+    WHERE pl.storefront_id IN (:storefront_ids)
     GROUP BY pl.storefront_id, MONTH(perf.created_datetime)
 ),
 

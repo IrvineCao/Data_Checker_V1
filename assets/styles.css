@@ -1,0 +1,45 @@
+.validation-result {
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 0.5rem 0;
+}
+
+.match { 
+    background-color: rgba(81, 207, 102, 0.1); 
+    border-left: 4px solid #51cf66; 
+}
+
+.mismatch { 
+    background-color: rgba(255, 107, 107, 0.1); 
+    border-left: 4px solid #ff6b6b; 
+}
+
+.missing { 
+    background-color: rgba(255, 177, 43, 0.1); 
+    border-left: 4px solid #ffb12b; 
+}
+
+.metric-card {
+    background: linear-gradient(135deg, rgba(255, 0, 127, 0.05), rgba(0, 255, 204, 0.05));
+    border: 1px solid rgba(255, 0, 127, 0.2);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    text-align: center;
+}
+
+.config-section {
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 10px;
+    padding: 1rem;
+    margin: 1rem 0;
+}
+
+.file-format-example {
+    background: rgba(0, 255, 204, 0.05);
+    border: 1px solid rgba(0, 255, 204, 0.2);
+    border-radius: 8px;
+    padding: 1rem;
+    font-family: monospace;
+    font-size: 0.9rem;
+} 
