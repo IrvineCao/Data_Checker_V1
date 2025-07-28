@@ -10,3 +10,9 @@ def initialize_session_state():
         st.session_state.current_page = 'Home'
     if 'user_message' not in st.session_state:
         st.session_state.user_message = None
+    if 'circus_mode' not in st.session_state:
+        st.session_state.circus_mode = False
+    if 'konami_code' not in st.session_state:
+        st.session_state.konami_code = []
+    if 'secret_clicks' not in st.session_state:
+        st.session_state.secret_clicks = 0

@@ -1,0 +1,95 @@
+/* Basic Animations */
+
+/* Subtle fade in */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Gentle scale */
+@keyframes gentleScale {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+    100% { transform: scale(1); }
+}
+
+/* Soft pulse */
+@keyframes softPulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.8; }
+    100% { opacity: 1; }
+}
+
+/* Apply subtle animations */
+/* Main title */
+h1 {
+    animation: fadeIn 1s ease-out;
+}
+
+/* Buttons */
+button {
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    transform: scale(1.02);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Success messages */
+[data-baseweb="notification"] {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Metrics */
+[data-testid="metric-container"] {
+    transition: all 0.3s ease;
+}
+
+[data-testid="metric-container"]:hover {
+    transform: scale(1.02);
+}
+
+/* Links */
+a {
+    transition: all 0.3s ease;
+}
+
+a:hover {
+    opacity: 0.8;
+}
+
+/* Images */
+img {
+    transition: all 0.3s ease;
+}
+
+img:hover {
+    transform: scale(1.05);
+}
+
+/* File uploader */
+[data-testid="stFileUploader"] {
+    transition: all 0.3s ease;
+}
+
+[data-testid="stFileUploader"]:hover {
+    transform: scale(1.01);
+}
+
+/* Expandable sections */
+[data-testid="stExpander"] {
+    transition: all 0.3s ease;
+}
+
+[data-testid="stExpander"]:hover {
+    transform: scale(1.01);
+}
+
+/* Dividers */
+hr {
+    height: 2px;
+    background: linear-gradient(90deg, #f0f2f6, #4c4c4c, #f0f2f6);
+    border: none;
+    opacity: 0.5;
+} 

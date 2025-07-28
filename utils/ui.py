@@ -8,6 +8,78 @@ def load_css():
     with open("assets/styles.css") as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
+def add_easter_egg():
+    """Add a hidden easter egg input for circus mode"""
+    # Add the hidden input with custom styling
+    st.markdown("""
+        <style>
+            /* Easter Egg Container */
+            #easter-egg-container {
+                position: fixed;
+                bottom: 10px;
+                right: 10px;
+                z-index: 1000;
+                opacity: 0.1;
+                transition: all 0.3s ease;
+            }
+            #easter-egg-container:hover {
+                opacity: 1;
+            }
+            
+            /* Hide default Streamlit elements */
+            #easter-egg-container .stTextInput {
+                opacity: 0;
+                transition: all 0.3s ease;
+            }
+            #easter-egg-container:hover .stTextInput {
+                opacity: 1;
+            }
+            
+            /* Circus Mode Active Indicator */
+            .circus-mode-active {
+                position: fixed;
+                bottom: 40px;
+                right: 10px;
+                padding: 5px 10px;
+                background: linear-gradient(45deg, #ff1493, #4169e1);
+                color: white;
+                border-radius: 20px;
+                font-size: 12px;
+                opacity: 0;
+                transform: translateY(20px);
+                transition: all 0.3s ease;
+                z-index: 1000;
+            }
+            .circus-mode-active.show {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        </style>
+        <div id="easter-egg-container">
+            🎪
+        </div>
+        <div class="circus-mode-active" id="circus-indicator">
+            🎪 Circus Mode Active! 🎪
+        </div>
+    """, unsafe_allow_html=True)
+    
+    # Create a container for the easter egg input
+    with st.container():
+        # Add a small text input that will be styled by the CSS above
+        circus_code = st.text_input("", key="circus_code", label_visibility="collapsed")
+        
+        # Check for the secret code
+        if circus_code.lower() == "circus":
+            st.session_state.circus_mode = True
+            # Show the circus mode indicator
+            st.markdown("""
+                <script>
+                    document.getElementById('circus-indicator').classList.add('show');
+                </script>
+            """, unsafe_allow_html=True)
+        elif circus_code and hasattr(st.session_state, 'circus_mode'):
+            del st.session_state.circus_mode
+
 def setup_page():
     """Setup initial page configuration"""
     st.set_page_config(
@@ -63,6 +135,8 @@ def render_file_upload_section(marketplace=""):
         </div>
         """, unsafe_allow_html=True)
         
+        st.markdown("""---""")
+
         uploaded_file = st.file_uploader(
             f"Choose your {marketplace} performance file" if marketplace else "Choose your performance file",
             type=['csv', 'xlsx'],

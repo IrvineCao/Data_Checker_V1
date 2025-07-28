@@ -4,11 +4,14 @@ from utils.helpers import initialize_session_state
 from utils.logic import preprocess_uploaded_data, query_database_performance, compare_performance_data
 from utils import ui
 from utils.ui import *
+from utils.animations import apply_animations
 
 def main():
-    load_css()
     # Initialize session state and display user message
     initialize_session_state()
+    
+    # Apply animations
+    apply_animations()
 
     # Setup page
     st.set_page_config(
