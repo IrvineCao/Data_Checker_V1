@@ -69,7 +69,7 @@ def add_easter_egg():
         circus_code = st.text_input("", key="circus_code", label_visibility="collapsed")
         
         # Check for the secret code
-        if circus_code.lower() == "circus":
+        if circus_code.lower() == "irvine":
             st.session_state.circus_mode = True
             # Show the circus mode indicator
             st.markdown("""
@@ -79,38 +79,6 @@ def add_easter_egg():
             """, unsafe_allow_html=True)
         elif circus_code and hasattr(st.session_state, 'circus_mode'):
             del st.session_state.circus_mode
-
-def setup_page():
-    """Setup initial page configuration"""
-    st.set_page_config(
-        page_title="Performance Data Validation",
-        page_icon="🔍",
-        layout="wide"
-    )
-    load_css()
-    st.title("🔍 Performance Data Validation Tool")
-    st.markdown("**Validate your performance files against database metrics with intelligent level handling**")
-
-def render_sidebar():
-    """Render sidebar configuration"""
-    with st.sidebar:
-        st.header("⚙️ Configuration")
-        
-        # Metrics selection
-        st.subheader("📊 Metrics to Validate")
-        available_metrics = ["impressions", "clicks", "gmv", "expense", "roas"]
-        
-        selected_metrics = st.multiselect(
-            "Select Metrics",
-            available_metrics,
-            default=["impressions", "clicks", "gmv", "expense", "roas"],
-            help="Choose which metrics to compare between file and database"
-        )
-        
-        # Fixed tolerance at 5%
-        tolerance_config = {metric: 5.0 for metric in available_metrics}
-        
-        return selected_metrics, tolerance_config
 
 def render_file_upload_section(marketplace=""):
     """Render file upload section"""
@@ -127,11 +95,6 @@ def render_file_upload_section(marketplace=""):
         55055,1,campaign,485257,15971,242602.46,34572.44,7.02<br>
         55055,1,object,1485257,15971,242602.46,34572.44,7.02<br>
         55056,2,placement,375025,15859,212525.96,34902.75,6.09<br>
-        <br>
-        <strong>📋 Alternative Format (Aggregated):</strong><br>
-        storefront,month,Impression,Clicks,GMV,Expense,ROAS<br>
-        55055,1,970514,31942,485204.92,69144.88,7.02<br>
-        55056,2,750050,31718,425051.92,69805.50,6.09<br>
         </div>
         """, unsafe_allow_html=True)
         

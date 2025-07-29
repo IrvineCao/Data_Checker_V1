@@ -21,6 +21,7 @@ def main():
     )
     
     # Add the easter egg input (it will be hidden until hovered)
+    st.markdown("pls dont type my name")
     add_easter_egg()
 
 # Header
@@ -78,17 +79,8 @@ Key features include:
 - **📊 Visual Analytics**: Visual representation of validation results
 """)
 
-# Footer
-st.divider()
-st.markdown("""
-<div style='text-align: center; color: #a1a1aa; padding: 1rem;'>
-    <p>🔍 <strong>Performance Data Validation Tool</strong> | Built for data accuracy and peace of mind</p>
-    <p><em>"Trust, but verify. Especially when it comes to performance data."</em></p>
-</div>
-""", unsafe_allow_html=True)
 
-
-def process_file(uploaded_file, selected_metrics, tolerance_config):
+def process_file(uploaded_file):
     """Process uploaded file and display results"""
     st.divider()
     
@@ -165,8 +157,6 @@ def process_file(uploaded_file, selected_metrics, tolerance_config):
             comparison_results = compare_performance_data(
                 df_processed.copy(), 
                 df_database.copy(), 
-                selected_metrics, 
-                tolerance_config
             )
         
         # Display Results

@@ -22,9 +22,6 @@ def main():
     st.title("🛍️ Lazada Performance Data Validation")
     st.markdown("**Validate your Lazada performance files against database metrics**")
 
-    # Get configuration from sidebar
-    selected_metrics, tolerance_config = ui.render_sidebar()
-
     # File upload section
     uploaded_file = ui.render_file_upload_section(marketplace="Lazada")
     
@@ -98,9 +95,7 @@ def main():
             with st.spinner("🔄 Comparing data..."):
                 comparison_results = compare_performance_data(
                     df_processed.copy(), 
-                    df_database.copy(), 
-                    selected_metrics, 
-                    tolerance_config
+                    df_database.copy(),
                 )
             
             # Display Results

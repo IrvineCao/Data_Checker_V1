@@ -23,9 +23,6 @@ def main():
     st.title("🛒 Shopee Performance Data Validation")
     st.markdown("**Validate your Shopee performance files against database metrics**")
 
-    # Get configuration from sidebar
-    selected_metrics, tolerance_config = ui.render_sidebar()
-
     # File upload section
     uploaded_file = ui.render_file_upload_section(marketplace="Shopee")
     
@@ -99,9 +96,7 @@ def main():
             with st.spinner("🔄 Comparing data..."):
                 comparison_results = compare_performance_data(
                     df_processed.copy(), 
-                    df_database.copy(), 
-                    selected_metrics, 
-                    tolerance_config
+                    df_database.copy(),
                 )
             
             # Display Results
