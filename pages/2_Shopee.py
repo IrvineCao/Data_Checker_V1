@@ -3,8 +3,9 @@ import pandas as pd
 from utils.core.helpers import initialize_session_state
 from utils.core.logic import preprocess_uploaded_data, query_database_performance, compare_performance_data
 from utils.ui.ui import *
+from utils.core.helpers import trace_function_call
 
-
+@trace_function_call
 def main():
     # Initialize session state and display user message
     initialize_session_state()

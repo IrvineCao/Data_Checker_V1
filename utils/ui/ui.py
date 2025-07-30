@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 from datetime import datetime
+from utils.core.helpers import trace_function_call
 
 def load_css():
     """Load custom CSS from file"""
@@ -61,6 +62,7 @@ ORDER BY storefront_id, month, level
             
     return uploaded_file
 
+@trace_function_call
 def render_file_info(df):
     """Render file information"""
     col1, col2, col3 = st.columns(3)
@@ -73,6 +75,7 @@ def render_file_info(df):
         unique_months = df['month'].nunique() if 'month' in df.columns else 0
         st.metric("📅 Months", unique_months)
 
+@trace_function_call
 def render_results_summary(comparison_results):
     """Render summary metrics"""
     total_comparisons = len(comparison_results)
@@ -130,6 +133,7 @@ def render_results_summary(comparison_results):
     
     return total_comparisons, matches, mismatches, missing_file, missing_db
 
+@trace_function_call
 def render_visual_analysis(comparison_results):
     """Render visual analysis section"""
     st.subheader("📈 Visual Analysis")
@@ -170,6 +174,7 @@ def render_visual_analysis(comparison_results):
         fig_bar.update_layout(yaxis_title="Accuracy (%)")
         st.plotly_chart(fig_bar, use_container_width=True)
 
+@trace_function_call
 def render_detailed_results(comparison_results):
     """Render detailed results tabs"""
     tab1, tab2, tab3, tab4 = st.tabs([
@@ -189,14 +194,14 @@ def render_detailed_results(comparison_results):
             elif 'missing' in str(val):
                 return 'background-color: rgba(255, 177, 43, 0.2)'
             return ''
-        
+            
         styled_results = comparison_results.style.map(
             highlight_status, subset=['status']
         ).format({
             'file_value': '{:.2f}',
             'db_value': '{:.2f}', 
             'difference_pct': '{:.2f}%'
-        })
+        }, na_rep='-') # SỬA LỖI: Thêm na_rep='-' để xử lý giá trị rỗng
         
         st.dataframe(styled_results, use_container_width=True)
     
@@ -208,14 +213,23 @@ def render_detailed_results(comparison_results):
                     'file_value': '{:.2f}',
                     'db_value': '{:.2f}',
                     'difference_pct': '{:.2f}%'
-                }),
+                }, na_rep='-'), # SỬA LỖI: Thêm na_rep='-'
                 use_container_width=True
             )
             
             # Worst mismatches
             st.subheader("🔥 Largest Discrepancies")
             worst_mismatches = mismatches_only.nlargest(10, 'difference_pct')
-            st.dataframe(worst_mismatches[['storefront_id', 'month', 'level', 'metric', 'file_value', 'db_value', 'difference_pct']], use_container_width=True)
+            # Thêm format và na_rep cho bảng này để đảm bảo an toàn
+            st.dataframe(
+                worst_mismatches[['storefront_id', 'month', 'level', 'metric', 'file_value', 'db_value', 'difference_pct']]
+                .style.format({
+                    'file_value': '{:.2f}',
+                    'db_value': '{:.2f}',
+                    'difference_pct': '{:.2f}%'
+                }, na_rep='-'), 
+                use_container_width=True
+            )
         else:
             st.success("🎉 No mismatches found! All data matches within tolerance.")
     
@@ -225,13 +239,16 @@ def render_detailed_results(comparison_results):
         storefront_summary['total'] = storefront_summary.sum(axis=1)
         storefront_summary['accuracy'] = (storefront_summary.get('match', 0) / storefront_summary['total'] * 100).round(2)
         
-        st.dataframe(storefront_summary.style.format({'accuracy': '{:.2f}%'}), use_container_width=True)
+        st.dataframe(
+            storefront_summary.style.format({'accuracy': '{:.2f}%'}, na_rep='-'), # SỬA LỖI: Thêm na_rep='-'
+            use_container_width=True
+        )
     
     with tab4:
         if 'month' in comparison_results.columns:
             # Trend analysis by month
             monthly_accuracy = comparison_results.groupby(['month', 'metric'])['status'].apply(
-                lambda x: (x == 'match').sum() / len(x) * 100
+                lambda x: (x == 'match').sum() / len(x) * 100 if len(x) > 0 else 0
             ).reset_index()
             monthly_accuracy.columns = ['month', 'metric', 'accuracy']
             
@@ -248,6 +265,7 @@ def render_detailed_results(comparison_results):
         else:
             st.info("📊 Trend analysis requires monthly data")
 
+@trace_function_call
 def render_export_section(comparison_results, total_comparisons, matches, mismatches, missing_file, missing_db):
     """Render export section"""
     st.divider()

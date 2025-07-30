@@ -89,7 +89,7 @@ def process_file(uploaded_file):
         has_level_column = 'level' in df_upload.columns.str.lower()
         
         # Display file info
-        ui.render_file_info(df_upload)
+        render_file_info(df_upload)
         
         # File preview
         with st.expander("👀 File Preview (First 10 rows)", expanded=False):

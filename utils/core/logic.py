@@ -4,7 +4,9 @@ from sqlalchemy import text
 from utils.core.database import get_connection
 from Data.get_data import get_query
 import streamlit as st
+from utils.core.helpers import trace_function_call
 
+@trace_function_call
 def preprocess_uploaded_data(df):
     """Clean and prepare uploaded data for comparison."""
     df = df.copy()
@@ -31,6 +33,7 @@ def preprocess_uploaded_data(df):
     
     return df
 
+@trace_function_call
 @st.cache_data
 def query_database_performance(storefront_ids, months, marketplace=None):
     """Query database for performance metrics with level handling."""
@@ -65,6 +68,7 @@ def query_database_performance(storefront_ids, months, marketplace=None):
     with get_connection() as db:
         return pd.read_sql(text(query), db.connection(), params=params)
 
+@trace_function_call
 @st.cache_data
 def compare_performance_data(df_file, df_db):
     """Compare performance metrics between file and database."""
