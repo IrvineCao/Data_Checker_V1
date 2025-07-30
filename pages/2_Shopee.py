@@ -1,18 +1,14 @@
 import streamlit as st
 import pandas as pd
-from utils.helpers import initialize_session_state
-from utils.logic import preprocess_uploaded_data, query_database_performance, compare_performance_data
-from utils import ui
-from utils.ui import *
-from utils.animations import apply_animations
+from utils.core.helpers import initialize_session_state
+from utils.core.logic import preprocess_uploaded_data, query_database_performance, compare_performance_data
+from utils.ui.ui import *
 
 
 def main():
     # Initialize session state and display user message
     initialize_session_state()
     
-    # Apply animations
-    apply_animations()
 
     # Setup page
     st.set_page_config(
@@ -24,7 +20,7 @@ def main():
     st.markdown("**Validate your Shopee performance files against database metrics**")
 
     # File upload section
-    uploaded_file = ui.render_file_upload_section(marketplace="Shopee")
+    uploaded_file = render_file_upload_section(marketplace="Shopee")
     
     # Process uploaded file
     if uploaded_file is not None:
@@ -43,7 +39,7 @@ def main():
             has_level_column = 'level' in df_upload.columns.str.lower()
             
             # Display file info
-            ui.render_file_info(df_upload)
+            render_file_info(df_upload)
             
             # File preview
             with st.expander("👀 File Preview (First 10 rows)", expanded=False):
@@ -104,17 +100,17 @@ def main():
             st.subheader("📊 Validation Results")
             
             # Summary metrics
-            total_comparisons, matches, mismatches, missing_file, missing_db = ui.render_results_summary(comparison_results)
+            total_comparisons, matches, mismatches, missing_file, missing_db = render_results_summary(comparison_results)
             
             # Visual Analysis
             if not comparison_results.empty:
-                ui.render_visual_analysis(comparison_results)
+                render_visual_analysis(comparison_results)
             
             # Detailed results
-            ui.render_detailed_results(comparison_results)
+            render_detailed_results(comparison_results)
             
             # Export section
-            ui.render_export_section(comparison_results, total_comparisons, matches, mismatches, missing_file, missing_db)
+            render_export_section(comparison_results, total_comparisons, matches, mismatches, missing_file, missing_db)
             
         except Exception as e:
             st.error(f"❌ Error processing file: {str(e)}")

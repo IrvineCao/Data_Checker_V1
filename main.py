@@ -1,14 +1,10 @@
 import streamlit as st
 import pandas as pd
-from utils.helpers import initialize_session_state
-from utils.logic import preprocess_uploaded_data, query_database_performance, compare_performance_data
-from utils import ui
-from utils.animations import apply_animations
-from utils.ui import add_easter_egg
+from utils.core.helpers import initialize_session_state
+from utils.core.logic import preprocess_uploaded_data, query_database_performance, compare_performance_data
+from utils.ui.ui import *
 
 def main():
-    # Apply animations first
-    apply_animations()
     
     # Initialize session state and display user message
     initialize_session_state()
@@ -19,10 +15,6 @@ def main():
         page_icon="🔍",
         layout="wide"
     )
-    
-    # Add the easter egg input (it will be hidden until hovered)
-    st.markdown("pls dont type my name")
-    add_easter_egg()
 
 # Header
 st.title("🔍 Performance Data Validation Tool")

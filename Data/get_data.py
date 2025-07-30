@@ -2,7 +2,7 @@ from pathlib import Path
 
 def _get_query_from_file(file_path: str) -> str:
     """Helper function to read SQL file safely."""
-    path = Path(__file__).parent / "SQL" / file_path  # Changed from "sql" to "SQL"
+    path = Path(__file__).parent / "SQL" / file_path
     try:
         with open(path, 'r', encoding='utf-8') as f:
             return f.read()
